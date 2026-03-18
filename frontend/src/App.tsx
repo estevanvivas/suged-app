@@ -17,7 +17,6 @@ export default function App() {
       <Route path="/login" element={!session ? <Login /> : <Navigate to="/dashboard" />} />
       
       <Route element={session ? <Layout /> : <Navigate to="/login" />}>
-        {/* Ya no necesitamos pasarle 'session={session!}' al Dashboard */}
       </Route>
 
       <Route path="*" element={<Navigate to={session ? "/dashboard" : "/login"} />} />
