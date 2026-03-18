@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './app/AuthContext';
 
 import Login from './features/auth/Login';
+import Dashboard from './features/dashboard/Dashboard';
 import Layout from './components/layout/Layout';
 
 
@@ -17,6 +18,7 @@ export default function App() {
       <Route path="/login" element={!session ? <Login /> : <Navigate to="/dashboard" />} />
       
       <Route element={session ? <Layout /> : <Navigate to="/login" />}>
+        <Route path="/dashboard" element={<Dashboard />} />
       </Route>
 
       <Route path="*" element={<Navigate to={session ? "/dashboard" : "/login"} />} />
