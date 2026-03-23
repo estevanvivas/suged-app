@@ -1,12 +1,5 @@
-\# Sistema Universitario para la Gestión de Escenarios Deportivos (SUGED)
+# Sistema Universitario para la Gestión de Escenarios Deportivos (SUGED)
 
-
-
-\# Backend
-
-
+## Backend
 
 API del proyecto.
-
-
-
