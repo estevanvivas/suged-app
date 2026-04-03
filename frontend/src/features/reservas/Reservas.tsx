@@ -553,3 +553,289 @@ export default function Reservas() {
       </div>
     );
   }
+
+  // ==========================================
+  // VISTA USUARIO (Miembros UPTC) 
+  // ==========================================
+  return (
+    <div className="bg-white p-4 md:p-8 rounded-xl shadow-sm border border-slate-200 min-h-[80vh] flex flex-col">
+      <div className="mb-8 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 pb-4">
+        <div><h1 className="text-2xl font-bold text-[#1A1A1A]">Mis Reservas</h1><p className="text-slate-500 mt-1 text-sm">Gestiona tus espacios deportivos.</p></div>
+        <div className="flex bg-slate-100 p-1 rounded-xl w-full md:w-auto">
+          <button onClick={() => setVistaActiva('NUEVA')} className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg font-bold text-sm transition-all ${vistaActiva === 'NUEVA' ? 'bg-white text-[#1A1A1A] shadow-sm' : 'text-slate-500 hover:text-[#1A1A1A]'}`}><Ticket size={16} /> Agendar</button>
+          <button onClick={() => setVistaActiva('HISTORIAL')} className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg font-bold text-sm transition-all ${vistaActiva === 'HISTORIAL' ? 'bg-white text-[#1A1A1A] shadow-sm' : 'text-slate-500 hover:text-[#1A1A1A]'}`}><History size={16} /> Mi Historial</button>
+        </div>
+      </div>
+      
+      <div className="flex-1">
+        
+        {/* ========================================== */}
+        {/* WIZARD DE RESERVA PREMIUM (NUEVA)          */}
+        {/* ========================================== */}
+        {vistaActiva === 'NUEVA' && (
+          <div className="animate-in fade-in duration-500">
+            
+            {/* BARRA DE PROGRESO (STEPPER) */}
+            <div className="max-w-2xl mx-auto mb-12 md:mb-16 mt-4">
+              <div className="flex items-center justify-between relative px-2 md:px-8">
+                {/* Línea de fondo */}
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1.5 bg-slate-100 rounded-full z-0"></div>
+                {/* Línea de progreso amarilla animada */}
+                <div 
+                  className="absolute left-0 top-1/2 -translate-y-1/2 h-1.5 bg-[#FFCC29] rounded-full z-0 transition-all duration-700 ease-out" 
+                  style={{ width: paso === 1 ? '0%' : paso === 2 ? '50%' : '100%' }}
+                ></div>
+                
+                {[
+                  { num: 1, icon: MapPin, label: 'Escenario' },
+                  { num: 2, icon: CalendarIcon, label: 'Fecha' },
+                  { num: 3, icon: Clock, label: 'Confirmación' }
+                ].map((s) => (
+                  <div key={s.num} className="relative z-10 flex flex-col items-center gap-2 md:gap-3 bg-white px-2">
+                    <button 
+                      onClick={() => s.num < paso ? setPaso(s.num as any) : null}
+                      disabled={s.num > paso}
+                      className={`w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center transition-all duration-500 ${paso >= s.num ? 'bg-[#1A1A1A] text-[#FFCC29] shadow-lg shadow-[#1A1A1A]/20 scale-110' : 'bg-white border-2 border-slate-200 text-slate-300'}`}
+                    >
+                      <s.icon className={paso >= s.num ? 'w-5 h-5 md:w-6 md:h-6' : 'w-4 h-4 md:w-5 md:h-5'} />
+                    </button>
+                    <span className={`text-[10px] md:text-xs font-black uppercase tracking-widest transition-colors duration-500 ${paso >= s.num ? 'text-[#1A1A1A]' : 'text-slate-300'}`}>{s.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* PASO 1: CATÁLOGO INMERSIVO */}
+            {paso === 1 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-in slide-in-from-bottom-8 duration-500">
+                {escenarios.map(esc => (
+                  <button 
+                    key={esc.id} 
+                    onClick={() => { setEscenarioSeleccionado(esc); setPaso(2); }} 
+                    className="relative text-left rounded-3xl overflow-hidden aspect-[4/3] group shadow-sm hover:shadow-xl transition-all border border-slate-200/50"
+                  >
+                    <img src={esc.imagen_url || 'https://via.placeholder.com/400x300?text=Escenario'} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" alt={esc.nombre} />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-[#1A1A1A]/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                    
+                    <div className="absolute bottom-0 left-0 p-6 w-full">
+                      <div className="flex justify-between items-end">
+                        <div>
+                          <h3 className="font-black text-white text-2xl mb-1 group-hover:text-[#FFCC29] transition-colors">{esc.nombre}</h3>
+                          <p className="text-slate-300 text-xs font-medium flex items-center gap-1.5"><Users size={14} className="text-[#FFCC29]"/> Aforo máx: {esc.aforo || 'N/A'}</p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white group-hover:bg-[#FFCC29] group-hover:text-[#1A1A1A] transition-colors">
+                          <ChevronRight size={20} />
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* PASO 2: FECHA */}
+            {paso === 2 && escenarioSeleccionado && (
+              <div className="max-w-2xl mx-auto animate-in slide-in-from-right-8 duration-500">
+                
+                {/* Resumen Superior */}
+                <div className="flex items-center gap-4 p-4 mb-8 bg-slate-50 rounded-2xl border border-slate-200">
+                  <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0"><img src={escenarioSeleccionado.imagen_url} className="w-full h-full object-cover"/></div>
+                  <div className="flex-1">
+                    <p className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider">Has seleccionado</p>
+                    <p className="font-black text-[#1A1A1A] text-lg">{escenarioSeleccionado.nombre}</p>
+                  </div>
+                  <button onClick={() => setPaso(1)} className="p-2 md:p-3 text-slate-500 hover:text-[#1A1A1A] bg-white rounded-lg border border-slate-200 shadow-sm transition-colors" title="Cambiar Escenario"><Edit2 size={16}/></button>
+                </div>
+
+                <h2 className="text-xl md:text-2xl font-black text-[#1A1A1A] mb-8 text-center flex items-center justify-center gap-2"><CalendarIcon className="text-[#FFCC29]"/> ¿Qué día vas a jugar?</h2>
+                
+                <div className="flex justify-center mb-4">
+                  <DatePicker 
+                    selected={fechaObj} 
+                    onChange={(date: Date | null) => { 
+                      if (date) {
+                        setFechaObj(date); 
+                        setFechaSeleccionada(formatearFechaBackend(date)); 
+                        setPaso(3); 
+                      }
+                    }} 
+                    minDate={minDateObj} maxDate={maxDateObj} locale="es" inline 
+                  />
+                </div>
+                <p className="text-xs text-slate-400 mt-4 text-center">* Solo puedes reservar para la semana en curso.</p>
+              </div>
+            )}
+
+            {/* PASO 3: HORA Y CHECKOUT */}
+            {paso === 3 && fechaSeleccionada && escenarioSeleccionado && (
+              <div className="animate-in slide-in-from-right-8 duration-500">
+                
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                  <h2 className="text-xl font-black text-[#1A1A1A] flex items-center gap-2"><Clock className="text-[#FFCC29]"/> Selecciona un horario</h2>
+                  <button onClick={() => setPaso(2)} className="text-sm px-4 py-2 bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-[#1A1A1A] rounded-lg font-bold transition-colors flex items-center gap-1">
+                    <Edit2 size={14}/> Cambiar fecha
+                  </button>
+                </div>
+
+                {cargandoHoras ? <p className="text-center text-slate-500 py-12 animate-pulse font-medium">Buscando espacios libres...</p> : bloquesLibres.length === 0 ? <p className="text-center text-red-500 py-12 font-bold">No hay horarios disponibles para esta fecha.</p> : (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                    {bloquesLibres.map((bloque, i) => (
+                      <button key={i} onClick={() => setBloqueSeleccionado(bloque)} className={`p-3 rounded-xl border-2 font-bold text-sm flex justify-center items-center gap-1 transition-all ${bloqueSeleccionado?.hora_inicio === bloque.hora_inicio ? 'border-[#1A1A1A] bg-[#1A1A1A] text-[#FFCC29] shadow-lg scale-105' : 'border-slate-200 bg-white hover:border-[#FFCC29] text-slate-600'}`}>{bloque.etiqueta}</button>
+                    ))}
+                  </div>
+                )}
+                
+                {/* EL TICKET BORRADOR (CHECKOUT) */}
+                {bloqueSeleccionado && (
+                  <div className="mt-12 animate-in slide-in-from-bottom-8 duration-500 max-w-3xl mx-auto">
+                    <div className="bg-[#1A1A1A] rounded-3xl p-6 md:p-8 text-white relative overflow-hidden shadow-2xl border border-[#FFCC29]/20">
+                      
+                      <div className="hidden md:block absolute top-0 right-[35%] w-px h-full bg-white/10 border-dashed border-l border-white/20"></div>
+                      <div className="hidden md:block absolute right-[calc(35%-16px)] top-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full opacity-10"></div>
+                      <div className="md:hidden absolute bottom-[100px] left-0 w-full h-px border-dashed border-b border-white/20"></div>
+
+                      <div className="relative z-10 flex flex-col md:flex-row gap-8">
+                        
+                        {/* Datos de la Reserva */}
+                        <div className="flex-1 md:pr-6">
+                          <h3 className="text-xs md:text-sm font-bold text-[#FFCC29] uppercase tracking-widest mb-2 flex items-center gap-2"><Sparkles size={16}/> Resumen de Reserva</h3>
+                          <p className="text-3xl md:text-4xl font-black text-white leading-tight mb-8">{escenarioSeleccionado.nombre}</p>
+                          
+                          <div className="flex flex-col sm:flex-row gap-4">
+                            <div className="flex-1 flex items-center gap-3 bg-white/5 p-4 rounded-2xl border border-white/10">
+                              <div className="w-12 h-12 rounded-xl bg-[#FFCC29]/10 text-[#FFCC29] flex items-center justify-center shrink-0"><CalendarIcon size={20}/></div>
+                              <div><p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Fecha</p><p className="font-bold text-white text-sm md:text-base">{fechaSeleccionada}</p></div>
+                            </div>
+                            <div className="flex-1 flex items-center gap-3 bg-white/5 p-4 rounded-2xl border border-white/10">
+                              <div className="w-12 h-12 rounded-xl bg-[#FFCC29]/10 text-[#FFCC29] flex items-center justify-center shrink-0"><Clock size={20}/></div>
+                              <div><p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Horario</p><p className="font-bold text-white text-sm md:text-base">{bloqueSeleccionado.etiqueta}</p></div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Área de Acción / Formulario Faltante */}
+                        <div className="md:w-[35%] flex flex-col justify-center pt-6 md:pt-0">
+                          {leFaltanDatos ? (
+                            <form onSubmit={manejarGuardarPerfilYReservar} className="space-y-4 animate-in fade-in">
+                              <div><p className="text-xs text-[#FFCC29] font-bold mb-3 uppercase tracking-wider text-center">Completa tu perfil para continuar</p></div>
+                              <input required type="text" value={datosPerfilFaltantes.documento} onChange={e => setDatosPerfilFaltantes({...datosPerfilFaltantes, documento: e.target.value})} className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white outline-none focus:border-[#FFCC29] text-sm" placeholder="Doc. Identidad"/>
+                              <input required type="text" value={datosPerfilFaltantes.codigo} onChange={e => setDatosPerfilFaltantes({...datosPerfilFaltantes, codigo: e.target.value})} className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white outline-none focus:border-[#FFCC29] text-sm" placeholder="Cód. Estudiantil"/>
+                              <input required type="text" value={datosPerfilFaltantes.carrera} onChange={e => setDatosPerfilFaltantes({...datosPerfilFaltantes, carrera: e.target.value})} className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white outline-none focus:border-[#FFCC29] text-sm" placeholder="Carrera / Programa"/>
+                              <button type="submit" disabled={guardandoPerfil} className="w-full bg-[#FFCC29] text-[#1A1A1A] py-3 rounded-xl font-black hover:bg-[#e6b825] transition-all disabled:opacity-50 mt-2">{guardandoPerfil ? 'Procesando...' : 'Guardar y Reservar'}</button>
+                            </form>
+                          ) : (
+                            <div className="flex flex-col items-center justify-center h-full gap-4">
+                              <p className="text-xs text-slate-400 text-center px-4 hidden md:block">Todo listo. Al confirmar, tu solicitud pasará a revisión.</p>
+                              <button onClick={confirmarReserva} disabled={procesandoReserva} className="w-full bg-[#FFCC29] text-[#1A1A1A] py-4 rounded-xl font-black text-lg hover:bg-[#e6b825] hover:scale-105 transition-all shadow-[0_0_20px_rgba(255,204,41,0.3)] flex justify-center items-center gap-2">
+                                {procesandoReserva ? 'Enviando...' : <><CheckCircle2 size={20}/> Confirmar Reserva</>}
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ========================================== */}
+        {/* VISTA HISTORIAL RENOVADA (PASES Y PASADAS) */}
+        {/* ========================================== */}
+        {vistaActiva === 'HISTORIAL' && (
+          <div className="animate-in fade-in space-y-10">
+            
+            {reservasVigentes.length === 0 && reservasPasadas.length === 0 && (
+              <div className="text-center py-16 bg-slate-50 rounded-xl border border-dashed border-slate-300">
+                <Ticket className="mx-auto h-12 w-12 text-slate-400 mb-3" />
+                <h3 className="text-lg font-medium text-[#1A1A1A]">Aún no tienes reservas</h3>
+                <p className="text-sm text-slate-500 mt-1">Cuando agendes un espacio, aparecerá aquí.</p>
+                <button onClick={() => setVistaActiva('NUEVA')} className="mt-6 bg-[#1A1A1A] text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-black transition-colors">Hacer mi primera reserva</button>
+              </div>
+            )}
+
+            {reservasVigentes.length > 0 && (
+              <div>
+                <h2 className="text-lg font-black text-[#1A1A1A] mb-4 flex items-center gap-2">
+                  <Sparkles className="text-[#FFCC29]" /> Pases Activos
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {reservasVigentes.map(res => (
+                    <div key={res.id} className="bg-[#1A1A1A] text-white rounded-2xl overflow-hidden shadow-lg border border-white/10 flex flex-col relative group">
+                      <div className="absolute top-0 right-[25%] w-px h-full bg-white/10 border-dashed border-l border-white/20"></div>
+                      <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full opacity-10"></div>
+                      <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full opacity-10"></div>
+                      
+                      <div className="p-5 border-b border-white/5 relative z-10 flex justify-between items-start">
+                        <div className="pr-4">
+                          <h3 className="font-black text-xl leading-tight mb-2 text-white">{res.escenarios?.nombre}</h3>
+                          <div className="flex flex-col gap-2">
+                            <span className="flex items-center gap-1.5 text-xs font-medium text-slate-300"><CalendarIcon size={14} className="text-[#FFCC29]" /> {res.fecha_reserva}</span>
+                            <span className="flex items-center gap-1.5 text-xs font-medium text-slate-300"><Clock size={14} className="text-[#FFCC29]" /> {res.hora_inicio.slice(0,5)} - {res.hora_fin.slice(0,5)}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="p-5 relative z-10 bg-white/5 flex flex-col items-center justify-center min-h-[160px]">
+                        {res.estado === 'PENDIENTE_APROBACION' ? (
+                          <div className="text-center">
+                            <div className="w-12 h-12 bg-yellow-500/20 text-yellow-400 rounded-full flex items-center justify-center mx-auto mb-3">
+                              <Clock size={24} />
+                            </div>
+                            <p className="text-sm font-bold text-yellow-400">En Revisión</p>
+                            <p className="text-xs text-slate-400 mt-1 max-w-[200px] mx-auto">Esperando aprobación del administrador.</p>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center text-center">
+                            <div className="bg-white p-2 rounded-xl mb-3"><QRCodeSVG value={res.id} size={100} level="H" includeMargin={false} fgColor="#1A1A1A" /></div>
+                            <p className="text-xs font-bold text-green-400 uppercase tracking-widest flex items-center gap-1"><CheckCircle2 size={14}/> Aprobada</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {reservasPasadas.length > 0 && (
+              <div>
+                <h2 className="text-lg font-black text-slate-400 mb-4 flex items-center gap-2 border-t border-slate-100 pt-8">
+                  <History size={20} /> Historial Pasado
+                </h2>
+                <div className="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden">
+                  <div className="grid grid-cols-1 divide-y divide-slate-200">
+                    {reservasPasadas.map(res => (
+                      <div key={res.id} className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-100 transition-colors">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${res.estado === 'FINALIZADA' ? 'bg-blue-100 text-blue-600' : res.estado === 'RECHAZADA' ? 'bg-red-100 text-red-600' : 'bg-slate-200 text-slate-500'}`}>
+                            {res.estado === 'FINALIZADA' ? <CheckCircle2 size={20}/> : <X size={20}/>}
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-[#1A1A1A] text-sm">{res.escenarios?.nombre}</h3>
+                            <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
+                              <span className="flex items-center gap-1"><CalendarIcon size={12} /> {res.fecha_reserva}</span>
+                              <span className="flex items-center gap-1"><Clock size={12} /> {res.hora_inicio.slice(0,5)}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto pl-14 md:pl-0">
+                          <span className={`px-2.5 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider ${res.estado === 'FINALIZADA' ? 'bg-blue-100 text-blue-700' : res.estado === 'RECHAZADA' ? 'bg-red-100 text-red-700' : 'bg-slate-200 text-slate-600'}`}>
+                            {res.estado.replace('_', ' ')}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+            
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
