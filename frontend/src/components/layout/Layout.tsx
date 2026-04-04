@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../app/AuthContext';
 import { supabase } from '../../app/supabase';
-import { MapPin, Calendar, CreditCard, LogOut, Menu, X, User as UserIcon } from 'lucide-react';
+import { MapPin, Calendar, LogOut, Menu, X, User as UserIcon } from 'lucide-react';
 
 export default function Layout() {
   const { perfil, session } = useAuth();
@@ -17,9 +17,8 @@ export default function Layout() {
   // Definimos las rutas dinámicamente según el rol
   const navLinks = [
     { to: "/escenarios", icon: <MapPin size={20} />, label: "Escenarios" },
-    { to: "/reservas", icon: <Calendar size={20} />, label: perfil?.rol === 'ADMIN' ? "Todas las Reservas" : "Mis Reservas" },
-    // Ocultamos el módulo de pagos si no es ADMIN (podrás ajustarlo luego según tus RFs)
-    ...(perfil?.rol === 'ADMIN' ? [{ to: "/pagos", icon: <CreditCard size={20} />, label: "Pagos" }] : []),
+    ...(perfil?.rol === 'ADMIN' ? [{ to: "/reservas", icon: <Calendar size={20} />, label: "Todas las Reservas" }] : []),
+    ...(perfil?.rol === 'MEMBER_UPTC' ? [{ to: "/reservas", icon: <Calendar size={20} />, label: "Mis Reservas" }] : []),
   ];
 
   return (
@@ -43,7 +42,7 @@ export default function Layout() {
 
       {/* SIDEBAR (Menú lateral) */}
       <aside className={`
-        fixed md:static inset-y-0 left-0 z-50 w-72 bg-[#1A1A1A] text-slate-300 flex flex-col transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none
+        fixed md:sticky md:top-0 md:h-screen inset-y-0 left-0 z-50 w-72 bg-[#1A1A1A] text-slate-300 flex flex-col transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
         {/* Cabecera del Sidebar para móviles (Botón Cerrar) */}
@@ -94,7 +93,7 @@ export default function Layout() {
         </button>
 
         {/* Navegación Principal */}
-        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto scrollbar-hide">
           {navLinks.map((link) => (
             <NavLink
               key={link.to}
@@ -140,7 +139,7 @@ export default function Layout() {
         />
       )}
 
-      {/* Área de Contenido Principal (donde cargan Escenarios, Reservas, etc.) */}
+      {/* Área de Contenido Principal */}
       <main className="flex-1 p-0 md:p-6 overflow-y-auto w-full mx-auto bg-slate-50">
         <div className="max-w-[1600px] mx-auto h-full">
           <Outlet />
