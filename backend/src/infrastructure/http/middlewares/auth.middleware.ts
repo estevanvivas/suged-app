@@ -1,7 +1,7 @@
 import type {NextFunction, Request, Response} from "express";
 import {supabaseClient} from "../../database/supabase/client";
-import {UnauthorizedError} from "../../../shared/errors/UnauthorizedError";
-import {ForbiddenError} from "../../../shared/errors/ForbiddenError";
+import {UnauthorizedError} from "@shared/errors/UnauthorizedError";
+import {ForbiddenError} from "@shared/errors/ForbiddenError";
 
 const BEARER_PREFIX = "Bearer ";
 const ADMIN_ROLE = "ADMIN";

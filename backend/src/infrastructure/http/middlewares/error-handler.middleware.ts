@@ -1,12 +1,12 @@
 import type {NextFunction, Request, Response} from "express";
 import {StatusCodes} from "http-status-codes";
 import {HttpErrorResponse} from "../types/HttpErrorResponse";
-import {BaseError} from "../../../shared/errors/BaseError";
-import {UnauthorizedError} from "../../../shared/errors/UnauthorizedError";
-import {ForbiddenError} from "../../../shared/errors/ForbiddenError";
-import {NotFoundError} from "../../../shared/errors/NotFoundError";
-import {ConflictError} from "../../../shared/errors/ConflictError";
-import {InvalidOperationError} from "../../../shared/errors/InvalidOperationError";
+import {BaseError} from "@shared/errors/BaseError";
+import {UnauthorizedError} from "@shared/errors/UnauthorizedError";
+import {ForbiddenError} from "@shared/errors/ForbiddenError";
+import {NotFoundError} from "@shared/errors/NotFoundError";
+import {ConflictError} from "@shared/errors/ConflictError";
+import {InvalidOperationError} from "@shared/errors/InvalidOperationError";
 
 const mapDomainErrorToStatus = (error: BaseError): number => {
     if (error instanceof UnauthorizedError) return StatusCodes.UNAUTHORIZED;
