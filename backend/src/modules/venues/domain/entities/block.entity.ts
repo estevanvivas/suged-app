@@ -1,15 +1,13 @@
-import {UUID} from "@/core/domain/value-objects/uuid";
-import {DateTime} from "@/core/domain/value-objects/date-time";
-import {Time} from "@/core/domain/value-objects/time";
+import {Temporal} from "@js-temporal/polyfill";
 
 export class Block {
 
     constructor(
-        public readonly id: UUID,
-        public venueId: UUID,
-        public date: DateTime,
-        public startTime: Time,
-        public endTime: Time,
+        public readonly id: string,
+        public venueId: string,
+        public date: Temporal.PlainDate,
+        public startTime: Temporal.PlainTime,
+        public endTime: Temporal.PlainTime,
         public reason: string | null
     ) {
     }

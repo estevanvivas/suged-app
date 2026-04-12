@@ -1,16 +1,15 @@
-import {DateTime} from "luxon";
-import {UUID} from "@/core/domain/value-objects/uuid";
+import {Temporal} from "@js-temporal/polyfill";
 
 export class Venue {
 
     private constructor(
-        public readonly id: UUID,
+        public readonly id: string,
         public name: string,
         public description: string,
         public capacity: number,
         public imageUrl: string | null,
         public status: VenueStatus,
-        public createdAt: DateTime,
+        public createdAt: Temporal.Instant,
     ) {
     }
 
@@ -21,13 +20,13 @@ export class Venue {
         imageUrl?: string | null;
     }): Venue {
         return new Venue(
-            UUID.generate(),
+            crypto.randomUUID().toString(),
             venueData.name,
             venueData.description,
             venueData.capacity,
             venueData.imageUrl ?? null,
             'ACTIVE',
-            DateTime.now(),
+            Temporal.Now.instant()
         );
     }
 }
