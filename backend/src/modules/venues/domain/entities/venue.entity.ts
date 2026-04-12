@@ -2,7 +2,7 @@ import {Temporal} from "@js-temporal/polyfill";
 
 export class Venue {
 
-    private constructor(
+    public constructor(
         public readonly id: string,
         public name: string,
         public description: string,
