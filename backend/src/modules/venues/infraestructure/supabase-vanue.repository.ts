@@ -22,6 +22,15 @@ export class SupabaseVenueRepository implements VenueRepository {
         return (data ?? []).map(VenueMapper.toDomain);
     }
 
+    async findActives(): Promise<Venue[]> {
+        const {data} = await supabaseClient
+            .from("escenarios")
+            .select(VENUE_COLS)
+            .eq("estado", "ACTIVE");
+
+        return (data ?? []).map(VenueMapper.toDomain);
+    }
+
     async findById(id: string): Promise<Venue | null> {
         const {data, error} = await supabaseClient
             .from("escenarios")

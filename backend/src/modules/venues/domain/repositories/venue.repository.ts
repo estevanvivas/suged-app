@@ -9,6 +9,8 @@ export interface VenueRepository {
 
     findAll(): Promise<Venue[]>;
 
+    findActives(): Promise<Venue[]>;
+
     findById(id: string): Promise<Venue | null>;
 
     getScheduleByDay(
