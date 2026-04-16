@@ -6,7 +6,7 @@ import {
     GetVenueAvailableTimeSlotsQuery,
     getVenueAvailableTimeSlotsParamsSchema,
     getVenueAvailableTimeSlotsQuerySchema,
-} from "@venues-module/interfaces/http/validation/get-venue-available-time-slots.schemas";
+} from "@venues-module/interfaces/http/validation/get-venue-available-time-slots.schema";
 import {validateQuery} from "@infra/http/middlewares/query-validation.middleware";
 import {validateParams} from "@infra/http/middlewares/params-validation.middleware";
 import {requireAuthentication} from "@infra/http/middlewares/auth.middleware";

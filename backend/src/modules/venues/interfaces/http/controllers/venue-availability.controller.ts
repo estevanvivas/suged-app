@@ -7,7 +7,7 @@ import {
 import {
     GetVenueAvailableTimeSlotsParams,
     GetVenueAvailableTimeSlotsQuery
-} from "@venues-module/interfaces/http/validation/get-venue-available-time-slots.schemas";
+} from "@venues-module/interfaces/http/validation/get-venue-available-time-slots.schema";
 
 export class VenueAvailabilityController {
     constructor(
