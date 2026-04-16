@@ -2,6 +2,7 @@ import {Venue} from "@venues-module/domain/entities/venue.entity";
 import {Schedule} from "@venues-module/domain/entities/schedule.entity";
 import {DayOfWeek} from "@/core/domain/enums/day-of-week";
 import {Block} from "@venues-module/domain/entities/block.entity";
+import {RecurringBlock} from "@venues-module/domain/entities/recurring-block.entity";
 
 
 export interface VenueRepository {
@@ -22,4 +23,9 @@ export interface VenueRepository {
         venueId: string,
         date: string
     ): Promise<Block[]>;
+
+    findRecurringBlocksByDay(
+        venueId: string,
+        dayOfWeek: DayOfWeek
+    ): Promise<RecurringBlock[]>;
 }

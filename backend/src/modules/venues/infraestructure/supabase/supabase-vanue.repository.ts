@@ -1,16 +1,19 @@
 import {Venue} from "@venues-module/domain/entities/venue.entity";
 import {Schedule} from "@venues-module/domain/entities/schedule.entity";
 import {Block} from "@venues-module/domain/entities/block.entity";
+import {RecurringBlock} from "@venues-module/domain/entities/recurring-block.entity";
 import {DayOfWeek} from "@/core/domain/enums/day-of-week";
 import {VenueRepository} from "@venues-module/domain/repositories/venue.repository";
 import {supabaseClient} from "@infra/database/supabase/client";
 import {VenueMapper} from "@venues-module/infraestructure/supabase/mappers/venue.mapper";
 import {ScheduleMapper} from "@venues-module/infraestructure/supabase/mappers/schedule.mapper";
 import {BlockMapper} from "@venues-module/infraestructure/supabase/mappers/block.mapper";
+import {RecurringBlockMapper} from "@venues-module/infraestructure/supabase/mappers/recurring-block.mapper";
 
 const VENUE_COLS = "id, nombre, descripcion, aforo, imagen_url, estado, creado_en";
 const SCHEDULE_COLS = "id, escenario_id, dia_semana, hora_apertura, hora_cierre";
 const BLOCK_COLS = "id, escenario_id, fecha, hora_inicio, hora_fin, motivo";
+const RECURRING_BLOCK_COLS = "id, escenario_id, dia_semana, hora_inicio, hora_fin, motivo, creado_en";
 
 export class SupabaseVenueRepository implements VenueRepository {
 
@@ -70,5 +73,15 @@ export class SupabaseVenueRepository implements VenueRepository {
             .eq("fecha", date);
 
         return (data ?? []).map(BlockMapper.toDomain);
+    }
+
+    async findRecurringBlocksByDay(venueId: string, dayOfWeek: DayOfWeek): Promise<RecurringBlock[]> {
+        const {data} = await supabaseClient
+            .from("bloqueos_recurrentes_escenarios")
+            .select(RECURRING_BLOCK_COLS)
+            .eq("escenario_id", venueId)
+            .eq("dia_semana", dayOfWeek);
+
+        return (data ?? []).map(RecurringBlockMapper.toDomain);
     }
 }
