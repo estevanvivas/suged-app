@@ -33,7 +33,7 @@ const getUserRole = async (userId: string): Promise<string | null> => {
     return data?.rol ?? null;
 };
 
-export const verifyToken = async (
+export const requireAuthentication = async (
     req: Request,
     _res: Response,
     next: NextFunction
@@ -74,4 +74,4 @@ export const requireAdmin = (
     next();
 };
 
-export const requireAuthenticatedAdmin = [verifyToken, requireAdmin]
+export const requireAuthenticatedAdmin = [requireAuthentication, requireAdmin]
