@@ -9,7 +9,7 @@ import {
     GetVenueAvailableTimeSlotsQuery
 } from "@venues-module/interfaces/http/validation/get-venue-available-time-slots.schema";
 
-export class VenueAvailabilityController {
+export class VenueController {
     constructor(
         private readonly getVenueAvailableTimeSlotsUseCase: GetVenueAvailableTimeSlotsUseCase
     ) {
