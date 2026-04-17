@@ -44,7 +44,7 @@ export class SupabaseVenueRepository implements VenueRepository {
         return error ? null : VenueMapper.toDomain(data);
     }
 
-    async create(venue: Venue): Promise<Venue | null> {
+    async save(venue: Venue): Promise<Venue | null> {
         const {data, error} = await supabaseClient
             .from("escenarios")
             .insert({id: venue.id, ...VenueMapper.toPersistence(venue)})
@@ -77,7 +77,7 @@ export class SupabaseVenueRepository implements VenueRepository {
 
     async findRecurringBlocksByDay(venueId: string, dayOfWeek: DayOfWeek): Promise<RecurringBlock[]> {
         const {data} = await supabaseClient
-            .from("bloqueos_recurrentes_escenarios")
+            .from("bloqueos_recurrentes")
             .select(RECURRING_BLOCK_COLS)
             .eq("escenario_id", venueId)
             .eq("dia_semana", dayOfWeek);

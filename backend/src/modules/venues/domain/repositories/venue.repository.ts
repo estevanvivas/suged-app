@@ -6,7 +6,7 @@ import {RecurringBlock} from "@venues-module/domain/entities/recurring-block.ent
 
 
 export interface VenueRepository {
-    create(venue: Venue): Promise<Venue | null>;
+    save(venue: Venue): Promise<Venue | null>;
 
     findAll(): Promise<Venue[]>;
 
