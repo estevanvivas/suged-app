@@ -9,6 +9,7 @@ import {VenueMapper} from "@venues-module/infraestructure/supabase/mappers/venue
 import {ScheduleMapper} from "@venues-module/infraestructure/supabase/mappers/schedule.mapper";
 import {BlockMapper} from "@venues-module/infraestructure/supabase/mappers/block.mapper";
 import {RecurringBlockMapper} from "@venues-module/infraestructure/supabase/mappers/recurring-block.mapper";
+import {DatabaseQueryError} from "@shared/errors/DatabaseError";
 
 const VENUE_COLS = "id, nombre, descripcion, aforo, imagen_url, estado, creado_en";
 const SCHEDULE_COLS = "id, escenario_id, dia_semana, hora_apertura, hora_cierre";
@@ -18,20 +19,22 @@ const RECURRING_BLOCK_COLS = "id, escenario_id, dia_semana, hora_inicio, hora_fi
 export class SupabaseVenueRepository implements VenueRepository {
 
     async findAll(): Promise<Venue[]> {
-        const {data} = await supabaseClient
+        const {data, error} = await supabaseClient
             .from("escenarios")
             .select(VENUE_COLS);
 
-        return (data ?? []).map(VenueMapper.toDomain);
+        if (error) throw new DatabaseQueryError();
+        return data.map(VenueMapper.toDomain);
     }
 
     async findActives(): Promise<Venue[]> {
-        const {data} = await supabaseClient
+        const {data, error} = await supabaseClient
             .from("escenarios")
             .select(VENUE_COLS)
             .eq("estado", "ACTIVE");
 
-        return (data ?? []).map(VenueMapper.toDomain);
+        if (error) throw new DatabaseQueryError();
+        return data.map(VenueMapper.toDomain);
     }
 
     async findById(id: string): Promise<Venue | null> {
@@ -39,9 +42,10 @@ export class SupabaseVenueRepository implements VenueRepository {
             .from("escenarios")
             .select(VENUE_COLS)
             .eq("id", id)
-            .single();
+            .maybeSingle();
 
-        return error ? null : VenueMapper.toDomain(data);
+        if (error) throw new DatabaseQueryError();
+        return data ? VenueMapper.toDomain(data) : null;
     }
 
     async save(venue: Venue): Promise<Venue | null> {
@@ -51,7 +55,8 @@ export class SupabaseVenueRepository implements VenueRepository {
             .select(VENUE_COLS)
             .single();
 
-        return error ? null : VenueMapper.toDomain(data);
+        if (error) throw new DatabaseQueryError();
+        return VenueMapper.toDomain(data);
     }
 
     async getScheduleByDay(venueId: string, day: DayOfWeek): Promise<Schedule | null> {
@@ -60,28 +65,31 @@ export class SupabaseVenueRepository implements VenueRepository {
             .select(SCHEDULE_COLS)
             .eq("escenario_id", venueId)
             .eq("dia_semana", day)
-            .single();
+            .maybeSingle();
 
-        return error ? null : ScheduleMapper.toDomain(data);
+        if (error) throw new DatabaseQueryError();
+        return data ? ScheduleMapper.toDomain(data) : null;
     }
 
     async findBlocksForDate(venueId: string, date: string): Promise<Block[]> {
-        const {data} = await supabaseClient
+        const {data, error} = await supabaseClient
             .from("bloqueos_escenarios")
             .select(BLOCK_COLS)
             .eq("escenario_id", venueId)
             .eq("fecha", date);
 
-        return (data ?? []).map(BlockMapper.toDomain);
+        if (error) throw new DatabaseQueryError();
+        return data.map(BlockMapper.toDomain);
     }
 
     async findRecurringBlocksByDay(venueId: string, dayOfWeek: DayOfWeek): Promise<RecurringBlock[]> {
-        const {data} = await supabaseClient
+        const {data, error} = await supabaseClient
             .from("bloqueos_recurrentes")
             .select(RECURRING_BLOCK_COLS)
             .eq("escenario_id", venueId)
             .eq("dia_semana", dayOfWeek);
 
-        return (data ?? []).map(RecurringBlockMapper.toDomain);
+        if (error) throw new DatabaseQueryError();
+        return data.map(RecurringBlockMapper.toDomain);
     }
 }
