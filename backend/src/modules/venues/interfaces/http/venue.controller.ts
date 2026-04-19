@@ -8,10 +8,14 @@ import {
     GetVenueAvailableTimeSlotsParams,
     GetVenueAvailableTimeSlotsQuery
 } from "@venues-module/interfaces/http/validation/get-venue-available-time-slots.schema";
+import {VenueView} from "@venues-module/application/contracts/venue.view";
+import {CreateVenueBody} from "@venues-module/interfaces/http/validation/create-venue.schema";
+import {CreateVenueUseCase} from "@venues-module/application/use-cases/create-venue.usecase";
 
 export class VenueController {
     constructor(
-        private readonly getVenueAvailableTimeSlotsUseCase: GetVenueAvailableTimeSlotsUseCase
+        private readonly getVenueAvailableTimeSlotsUseCase: GetVenueAvailableTimeSlotsUseCase,
+        private readonly createVenueUseCase: CreateVenueUseCase
     ) {
     }
 
@@ -26,4 +30,17 @@ export class VenueController {
 
         return res.json(slots);
     };
+
+    createVenue = async (
+        req: Request<Record<string, never>, VenueView, CreateVenueBody>,
+        res: Response<VenueView>
+    ) => {
+        const venue = await this.createVenueUseCase.execute({
+            name: req.body.name,
+            description: req.body.description,
+            capacity: req.body.capacity,
+        })
+
+        return res.status(201).json(venue);
+    }
 }

@@ -48,7 +48,7 @@ export class SupabaseVenueRepository implements VenueRepository {
         return data ? VenueMapper.toDomain(data) : null;
     }
 
-    async save(venue: Venue): Promise<Venue | null> {
+    async save(venue: Venue): Promise<Venue> {
         const {data, error} = await supabaseClient
             .from("escenarios")
             .insert({id: venue.id, ...VenueMapper.toPersistence(venue)})

@@ -1,6 +1,6 @@
 import {Router} from "express";
 import {TimeSlotView} from "@venues-module/application/contracts/time-slot.view";
-import {VenueAvailabilityController} from "@venues-module/interfaces/http/controllers/venue-availability.controller";
+import {VenueController} from "@venues-module/interfaces/http/venue.controller";
 import {
     GetVenueAvailableTimeSlotsParams,
     GetVenueAvailableTimeSlotsQuery,
@@ -9,10 +9,24 @@ import {
 } from "@venues-module/interfaces/http/validation/get-venue-available-time-slots.schema";
 import {validateQuery} from "@infra/http/middlewares/query-validation.middleware";
 import {validateParams} from "@infra/http/middlewares/params-validation.middleware";
-import {requireAuthentication} from "@infra/http/middlewares/auth.middleware";
+import {requireAuthenticatedAdmin, requireAuthentication} from "@infra/http/middlewares/auth.middleware";
+import {VenueView} from "@venues-module/application/contracts/venue.view";
+import {CreateVenueBody} from "@venues-module/interfaces/http/validation/create-venue.schema";
 
-export const createVenueRoutes = (controller: VenueAvailabilityController) => {
+export const createVenueRoutes = (controller: VenueController) => {
     const router = Router();
+
+    router.post<
+        Record<string, never>,
+        VenueView,
+        CreateVenueBody
+    >(
+        "/",
+        requireAuthenticatedAdmin,
+        validateParams(getVenueAvailableTimeSlotsParamsSchema),
+        validateQuery(getVenueAvailableTimeSlotsQuerySchema),
+        controller.createVenue
+    );
 
     router.get<
         GetVenueAvailableTimeSlotsParams,
