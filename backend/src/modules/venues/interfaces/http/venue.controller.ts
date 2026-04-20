@@ -11,11 +11,17 @@ import {
 import {VenueView} from "@venues-module/application/contracts/venue.view";
 import {CreateVenueBody} from "@venues-module/interfaces/http/validation/create-venue.schema";
 import {CreateVenueUseCase} from "@venues-module/application/use-cases/create-venue.usecase";
+import {
+    UpsertVenueScheduleBody,
+    UpsertVenueScheduleParams
+} from "@venues-module/interfaces/http/validation/upsert-venue-schedule.schemas";
+import {UpsertVenueScheduleUseCase} from "@venues-module/application/use-cases/upsert-recurring-schedule.usecase";
 
 export class VenueController {
     constructor(
         private readonly getVenueAvailableTimeSlotsUseCase: GetVenueAvailableTimeSlotsUseCase,
-        private readonly createVenueUseCase: CreateVenueUseCase
+        private readonly createVenueUseCase: CreateVenueUseCase,
+        private readonly upsertVenueScheduleUseCase: UpsertVenueScheduleUseCase
     ) {
     }
 
@@ -42,5 +48,19 @@ export class VenueController {
         })
 
         return res.status(201).json(venue);
+    }
+
+    upsertVenueSchedule = async (
+        req: Request<UpsertVenueScheduleParams, void, UpsertVenueScheduleBody>,
+        res: Response<void>,
+    ) => {
+        await this.upsertVenueScheduleUseCase.execute({
+            venueId: req.params.venueId,
+            dayOfWeek: req.body.dayOfWeek,
+            openingTime: req.body.openingTime,
+            closingTime: req.body.closingTime
+        });
+
+        return res.status(204).send();
     }
 }

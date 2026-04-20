@@ -10,9 +10,9 @@ export const getVenueAvailableTimeSlotsQuerySchema = z.object({
     date: plainDateStringSchema,
 });
 
-export type GetVenueAvailableTimeSlotsParams = z.infer<
+export type GetVenueAvailableTimeSlotsParams = z.output<
     typeof getVenueAvailableTimeSlotsParamsSchema
 >;
-export type GetVenueAvailableTimeSlotsQuery = z.infer<
+export type GetVenueAvailableTimeSlotsQuery = z.output<
     typeof getVenueAvailableTimeSlotsQuerySchema
 >;

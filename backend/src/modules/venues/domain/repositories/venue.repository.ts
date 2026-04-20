@@ -28,4 +28,6 @@ export interface VenueRepository {
         venueId: string,
         dayOfWeek: DayOfWeek
     ): Promise<RecurringBlock[]>;
+
+    upsertSchedule(schedule: Schedule): Promise<void>;
 }

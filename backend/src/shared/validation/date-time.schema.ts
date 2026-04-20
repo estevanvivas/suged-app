@@ -17,9 +17,3 @@ export const plainDateSchema = plainDateStringSchema.transform((value) =>
 export const plainTimeSchema = plainTimeStringSchema.transform((value) =>
     Temporal.PlainTime.from(value)
 );
-
-export type PlainDateString = z.input<typeof plainDateStringSchema>;
-export type PlainTimeString = z.input<typeof plainTimeStringSchema>;
-export type PlainDateValue = z.output<typeof plainDateSchema>;
-export type PlainTimeValue = z.output<typeof plainTimeSchema>;
-

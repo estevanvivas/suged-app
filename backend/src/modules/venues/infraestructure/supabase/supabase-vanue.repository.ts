@@ -92,4 +92,17 @@ export class SupabaseVenueRepository implements VenueRepository {
         if (error) throw new DatabaseQueryError();
         return data.map(RecurringBlockMapper.toDomain);
     }
+
+    async upsertSchedule(schedule: Schedule): Promise<void> {
+        const {error} = await supabaseClient
+            .from("horarios_escenarios")
+            .upsert({
+                escenario_id: schedule.venueId,
+                dia_semana: schedule.dayOfWeek,
+                hora_apertura: schedule.openingTime.toString(),
+                hora_cierre: schedule.closingTime.toString(),
+            }, {onConflict: "escenario_id, dia_semana"});
+
+        if (error) throw new DatabaseQueryError();
+    }
 }

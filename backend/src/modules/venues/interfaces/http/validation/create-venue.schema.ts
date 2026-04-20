@@ -19,4 +19,4 @@ export const createVenueBodySchema = z.object({
         .positive({message: "La capacidad debe ser un entero positivo."}),
 });
 
-export type CreateVenueBody = z.infer<typeof createVenueBodySchema>;
+export type CreateVenueBody = z.output<typeof createVenueBodySchema>;
