@@ -13,6 +13,7 @@ import {
 import {createVenueBodySchema} from "@venues-module/interfaces/http/validation/create-venue.schema";
 import {venueIdParamsSchema} from "@venues-module/interfaces/http/validation/venue-id-params.schema";
 import {createVenueBlockBodySchema} from "@venues-module/interfaces/http/validation/create-venue-block.schemas";
+import {blockIdParamsSchema} from "@venues-module/interfaces/http/validation/block-id-params.schema";
 
 export const createVenueRoutes = (controller: VenueController) => {
     const router = Router();
@@ -25,7 +26,7 @@ export const createVenueRoutes = (controller: VenueController) => {
     );
 
     router.get(
-        "/:venueId/available-time-slots",
+        "/venues/:venueId/available-time-slots",
         requireAuthentication,
         validateParams(venueIdParamsSchema),
         validateQuery(getVenueAvailableTimeSlotsQuerySchema),
@@ -33,7 +34,7 @@ export const createVenueRoutes = (controller: VenueController) => {
     );
 
     router.post(
-        "/:venueId/schedules",
+        "/venues/:venueId/schedules",
         requireAuthenticatedAdmin,
         validateParams(venueIdParamsSchema),
         validateBody(upsertVenueScheduleBodySchema),
@@ -41,11 +42,18 @@ export const createVenueRoutes = (controller: VenueController) => {
     );
 
     router.post(
-        "/:venueId/blocks",
+        "/venues/:venueId/blocks",
         requireAuthenticatedAdmin,
         validateParams(venueIdParamsSchema),
         validateBody(createVenueBlockBodySchema),
         controller.createVenueBlock
+    )
+
+    router.delete(
+        "/venues/blocks/:blockId",
+        requireAuthenticatedAdmin,
+        validateParams(blockIdParamsSchema),
+        controller.deleteVenueBlock
     )
 
     return router;
