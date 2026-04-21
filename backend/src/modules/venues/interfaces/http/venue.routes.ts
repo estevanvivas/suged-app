@@ -1,7 +1,7 @@
 import {Router} from "express";
 import {VenueController} from "@venues-module/interfaces/http/venue.controller";
 import {
-    getVenueAvailableTimeSlotsParamsSchema, getVenueAvailableTimeSlotsQuerySchema,
+    getVenueAvailableTimeSlotsQuerySchema,
 } from "@venues-module/interfaces/http/validation/get-venue-available-time-slots.schema";
 import {validateQuery} from "@infra/http/middlewares/query-validation.middleware";
 import {validateParams} from "@infra/http/middlewares/params-validation.middleware";
@@ -9,9 +9,10 @@ import {requireAuthenticatedAdmin, requireAuthentication} from "@infra/http/midd
 import {validateBody} from "@infra/http/middlewares/body-validation.middleware";
 import {
     upsertVenueScheduleBodySchema,
-    upsertVenueScheduleParamsSchema
 } from "@venues-module/interfaces/http/validation/upsert-venue-schedule.schemas";
 import {createVenueBodySchema} from "@venues-module/interfaces/http/validation/create-venue.schema";
+import {venueIdParamsSchema} from "@venues-module/interfaces/http/validation/venue-id-params.schema";
+import {createVenueBlockBodySchema} from "@venues-module/interfaces/http/validation/create-venue-block.schemas";
 
 export const createVenueRoutes = (controller: VenueController) => {
     const router = Router();
@@ -26,7 +27,7 @@ export const createVenueRoutes = (controller: VenueController) => {
     router.get(
         "/:venueId/available-time-slots",
         requireAuthentication,
-        validateParams(getVenueAvailableTimeSlotsParamsSchema),
+        validateParams(venueIdParamsSchema),
         validateQuery(getVenueAvailableTimeSlotsQuerySchema),
         controller.getAvailableTimeSlots
     );
@@ -34,10 +35,18 @@ export const createVenueRoutes = (controller: VenueController) => {
     router.post(
         "/:venueId/schedules",
         requireAuthenticatedAdmin,
-        validateParams(upsertVenueScheduleParamsSchema),
+        validateParams(venueIdParamsSchema),
         validateBody(upsertVenueScheduleBodySchema),
         controller.upsertVenueSchedule
     );
+
+    router.post(
+        "/:venueId/blocks",
+        requireAuthenticatedAdmin,
+        validateParams(venueIdParamsSchema),
+        validateBody(createVenueBlockBodySchema),
+        controller.createVenueBlock
+    )
 
     return router;
 };

@@ -3,6 +3,7 @@ import {Schedule} from "@venues-module/domain/entities/schedule.entity";
 import {DayOfWeek} from "@/core/domain/enums/day-of-week";
 import {Block} from "@venues-module/domain/entities/block.entity";
 import {RecurringBlock} from "@venues-module/domain/entities/recurring-block.entity";
+import {Temporal} from "@js-temporal/polyfill";
 
 
 export interface VenueRepository {
@@ -21,7 +22,7 @@ export interface VenueRepository {
 
     findBlocksForDate(
         venueId: string,
-        date: string
+        date: Temporal.PlainDate
     ): Promise<Block[]>;
 
     findRecurringBlocksByDay(
@@ -30,4 +31,6 @@ export interface VenueRepository {
     ): Promise<RecurringBlock[]>;
 
     upsertSchedule(schedule: Schedule): Promise<void>;
+
+    saveBlock(block: Block): Promise<Block>;
 }

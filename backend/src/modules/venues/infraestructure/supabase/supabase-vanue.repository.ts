@@ -10,6 +10,7 @@ import {ScheduleMapper} from "@venues-module/infraestructure/supabase/mappers/sc
 import {BlockMapper} from "@venues-module/infraestructure/supabase/mappers/block.mapper";
 import {RecurringBlockMapper} from "@venues-module/infraestructure/supabase/mappers/recurring-block.mapper";
 import {DatabaseQueryError} from "@shared/errors/DatabaseError";
+import {Temporal} from "@js-temporal/polyfill";
 
 const VENUE_COLS = "id, nombre, descripcion, aforo, imagen_url, estado, creado_en";
 const SCHEDULE_COLS = "id, escenario_id, dia_semana, hora_apertura, hora_cierre";
@@ -71,12 +72,12 @@ export class SupabaseVenueRepository implements VenueRepository {
         return data ? ScheduleMapper.toDomain(data) : null;
     }
 
-    async findBlocksForDate(venueId: string, date: string): Promise<Block[]> {
+    async findBlocksForDate(venueId: string, date: Temporal.PlainDate): Promise<Block[]> {
         const {data, error} = await supabaseClient
             .from("bloqueos_escenarios")
             .select(BLOCK_COLS)
             .eq("escenario_id", venueId)
-            .eq("fecha", date);
+            .eq("fecha", date.toString());
 
         if (error) throw new DatabaseQueryError();
         return data.map(BlockMapper.toDomain);
@@ -104,5 +105,23 @@ export class SupabaseVenueRepository implements VenueRepository {
             }, {onConflict: "escenario_id, dia_semana"});
 
         if (error) throw new DatabaseQueryError();
+    }
+
+    async saveBlock(block: Block): Promise<Block> {
+        const {data, error} = await supabaseClient
+            .from("bloqueos_escenarios")
+            .insert({
+                id: block.id,
+                escenario_id: block.venueId,
+                fecha: block.date.toString(),
+                hora_inicio: block.startTime.toString(),
+                hora_fin: block.endTime.toString(),
+                motivo: block.reason,
+            })
+            .select(BLOCK_COLS)
+            .single();
+
+        if (error) throw new DatabaseQueryError();
+        return BlockMapper.toDomain(data);
     }
 }

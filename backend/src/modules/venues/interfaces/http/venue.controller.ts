@@ -15,12 +15,15 @@ import {
 } from "@venues-module/interfaces/http/validation/upsert-venue-schedule.schemas";
 import {UpsertVenueScheduleUseCase} from "@venues-module/application/use-cases/upsert-recurring-schedule.usecase";
 import {VenueIdParams} from "@venues-module/interfaces/http/validation/venue-id-params.schema";
+import {CreateVenueBlockBody} from "@venues-module/interfaces/http/validation/create-venue-block.schemas";
+import {CreateVenueBlockUseCase} from "@venues-module/application/use-cases/create-venue-block.usecase";
 
 export class VenueController {
     constructor(
         private readonly getVenueAvailableTimeSlotsUseCase: GetVenueAvailableTimeSlotsUseCase,
         private readonly createVenueUseCase: CreateVenueUseCase,
-        private readonly upsertVenueScheduleUseCase: UpsertVenueScheduleUseCase
+        private readonly upsertVenueScheduleUseCase: UpsertVenueScheduleUseCase,
+        private readonly createVenueBlockUseCase: CreateVenueBlockUseCase
     ) {
     }
 
@@ -61,5 +64,20 @@ export class VenueController {
         });
 
         return res.status(204).send();
+    }
+
+    createVenueBlock = async (
+        req: Request<VenueIdParams, void, CreateVenueBlockBody>,
+        res: Response<void>,
+    ) => {
+        await this.createVenueBlockUseCase.execute({
+            venueId: req.params.venueId,
+            date: Temporal.PlainDate.from(req.body.date),
+            startTime: Temporal.PlainTime.from(req.body.startTime),
+            endTime: Temporal.PlainTime.from(req.body.endTime),
+            reason: req.body.reason
+        });
+
+        return res.status(201).send();
     }
 }
