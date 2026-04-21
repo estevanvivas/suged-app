@@ -30,7 +30,7 @@ export interface VenueRepository {
         dayOfWeek: DayOfWeek
     ): Promise<RecurringBlock[]>;
 
-    upsertSchedule(schedule: Schedule): Promise<void>;
+    upsertSchedule(schedule: Schedule): Promise<Schedule>;
 
     saveBlock(block: Block): Promise<Block>;
 }

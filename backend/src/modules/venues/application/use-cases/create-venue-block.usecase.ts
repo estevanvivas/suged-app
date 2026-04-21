@@ -29,7 +29,7 @@ export class CreateVenueBlockUseCase {
         if (hasCollision) {
             throw new ConflictError(
                 "El bloque se superpone con otro bloque existente o con un bloqueo recurrente.",
-                "BLOCK_COLLISION"
+                "VENUE_BLOCK_COLLISION"
             );
         }
 

@@ -4,13 +4,7 @@ import {ConflictError} from "@shared/errors/ConflictError";
 import {BookingRepository} from "@bookings-module/domain/repositories/booking.repository";
 import {Temporal} from "@js-temporal/polyfill";
 import {Schedule} from "@venues-module/domain/entities/schedule.entity";
-
-type FutureBookingCandidate = {
-    id: string;
-    bookingDate: Temporal.PlainDate;
-    startTime: Temporal.PlainTime;
-    endTime: Temporal.PlainTime;
-};
+import {NotFoundError} from "@shared/errors/NotFoundError";
 
 export class UpsertVenueScheduleUseCase {
     constructor(
@@ -20,11 +14,16 @@ export class UpsertVenueScheduleUseCase {
     }
 
     async execute(input: UpsertVenueScheduleInput): Promise<void> {
+        const venue = await this.venueRepository.findById(input.venueId);
+        if (!venue) {
+            throw new NotFoundError("No se encontró el escenario", "VENUE_NOT_FOUND");
+        }
+
         const today = Temporal.Now.plainDateISO();
 
         const collisions = await this.bookingRepository.findForVenueOnDate(input.venueId, today);
 
-        const affected = collisions.filter((booking: FutureBookingCandidate) => {
+        const affected = collisions.filter((booking) => {
             const bookingDay = booking.bookingDate.dayOfWeek;
             if (bookingDay !== input.dayOfWeek) return false;
 
@@ -36,7 +35,8 @@ export class UpsertVenueScheduleUseCase {
 
         if (affected.length > 0) {
             throw new ConflictError(
-                `Accion denegada: modificar este horario dejaria ${affected.length} reserva(s) por fuera del horario de atencion. Cancela esas reservas antes de aplicar el cambio.`
+                `Accion denegada: modificar este horario dejaria ${affected.length} reserva(s) por fuera del horario de atencion. Cancela esas reservas antes de aplicar el cambio.`,
+                "VENUE_SCHEDULE_CONFLICT"
             );
         }
 
