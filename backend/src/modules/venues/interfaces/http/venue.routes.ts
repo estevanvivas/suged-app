@@ -50,7 +50,7 @@ export const createVenueRoutes = (controller: VenueController) => {
     )
 
     router.delete(
-        "/venues/blocks/:blockId",
+        "/venues/:venueId/blocks/:blockId",
         requireAuthenticatedAdmin,
         validateParams(deleteVenueBlockParamsSchema),
         controller.deleteVenueBlock
