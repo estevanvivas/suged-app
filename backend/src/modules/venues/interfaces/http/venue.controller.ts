@@ -5,7 +5,6 @@ import {
     GetVenueAvailableTimeSlotsUseCase
 } from "@venues-module/application/use-cases/get-venue-available-time-slots.usecase";
 import {
-    GetVenueAvailableTimeSlotsParams,
     GetVenueAvailableTimeSlotsQuery
 } from "@venues-module/interfaces/http/validation/get-venue-available-time-slots.schema";
 import {VenueView} from "@venues-module/application/contracts/venue.view";
@@ -13,9 +12,9 @@ import {CreateVenueBody} from "@venues-module/interfaces/http/validation/create-
 import {CreateVenueUseCase} from "@venues-module/application/use-cases/create-venue.usecase";
 import {
     UpsertVenueScheduleBody,
-    UpsertVenueScheduleParams
 } from "@venues-module/interfaces/http/validation/upsert-venue-schedule.schemas";
 import {UpsertVenueScheduleUseCase} from "@venues-module/application/use-cases/upsert-recurring-schedule.usecase";
+import {VenueIdParams} from "@venues-module/interfaces/http/validation/venue-id-params.schema";
 
 export class VenueController {
     constructor(
@@ -26,7 +25,7 @@ export class VenueController {
     }
 
     getAvailableTimeSlots = async (
-        req: Request<GetVenueAvailableTimeSlotsParams, TimeSlotView[], unknown, GetVenueAvailableTimeSlotsQuery>,
+        req: Request<VenueIdParams, TimeSlotView[], unknown, GetVenueAvailableTimeSlotsQuery>,
         res: Response<TimeSlotView[]>
     ) => {
         const slots = await this.getVenueAvailableTimeSlotsUseCase.execute({
@@ -51,7 +50,7 @@ export class VenueController {
     }
 
     upsertVenueSchedule = async (
-        req: Request<UpsertVenueScheduleParams, void, UpsertVenueScheduleBody>,
+        req: Request<VenueIdParams, void, UpsertVenueScheduleBody>,
         res: Response<void>,
     ) => {
         await this.upsertVenueScheduleUseCase.execute({

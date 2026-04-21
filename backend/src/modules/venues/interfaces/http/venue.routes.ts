@@ -32,7 +32,7 @@ export const createVenueRoutes = (controller: VenueController) => {
     );
 
     router.post(
-        "/:venueId/recurring-schedules",
+        "/:venueId/schedules",
         requireAuthenticatedAdmin,
         validateParams(upsertVenueScheduleParamsSchema),
         validateBody(upsertVenueScheduleBodySchema),

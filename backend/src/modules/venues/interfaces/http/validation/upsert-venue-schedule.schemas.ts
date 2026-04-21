@@ -1,12 +1,7 @@
 import {z} from "zod";
-import {uuidSchema} from "@shared/validation/uuid.schema";
 import {Temporal} from "@js-temporal/polyfill";
 import {plainTimeSchema} from "@shared/validation/date-time.schema";
 import {dayOfWeekSchema} from "@shared/validation/day-of-week.schema";
-
-export const upsertVenueScheduleParamsSchema = z.object({
-    venueId: uuidSchema
-})
 
 export const upsertVenueScheduleBodySchema = z.object({
     dayOfWeek: dayOfWeekSchema,
@@ -19,4 +14,3 @@ export const upsertVenueScheduleBodySchema = z.object({
     })
 
 export type UpsertVenueScheduleBody = z.output<typeof upsertVenueScheduleBodySchema>;
-export type UpsertVenueScheduleParams = z.output<typeof upsertVenueScheduleParamsSchema>;
