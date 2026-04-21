@@ -9,11 +9,11 @@ import {requireAuthenticatedAdmin, requireAuthentication} from "@infra/http/midd
 import {validateBody} from "@infra/http/middlewares/body-validation.middleware";
 import {
     upsertVenueScheduleBodySchema,
-} from "@venues-module/interfaces/http/validation/upsert-venue-schedule.schemas";
+} from "@venues-module/interfaces/http/validation/upsert-venue-schedule.schema";
 import {createVenueBodySchema} from "@venues-module/interfaces/http/validation/create-venue.schema";
 import {venueIdParamsSchema} from "@venues-module/interfaces/http/validation/venue-id-params.schema";
-import {createVenueBlockBodySchema} from "@venues-module/interfaces/http/validation/create-venue-block.schemas";
-import {blockIdParamsSchema} from "@venues-module/interfaces/http/validation/block-id-params.schema";
+import {createVenueBlockBodySchema} from "@venues-module/interfaces/http/validation/create-venue-block.schema";
+import {deleteVenueBlockParamsSchema} from "@venues-module/interfaces/http/validation/delete-venue-block-params.schema";
 
 export const createVenueRoutes = (controller: VenueController) => {
     const router = Router();
@@ -52,7 +52,7 @@ export const createVenueRoutes = (controller: VenueController) => {
     router.delete(
         "/venues/blocks/:blockId",
         requireAuthenticatedAdmin,
-        validateParams(blockIdParamsSchema),
+        validateParams(deleteVenueBlockParamsSchema),
         controller.deleteVenueBlock
     )
 

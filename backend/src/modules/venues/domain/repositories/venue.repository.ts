@@ -34,7 +34,7 @@ export interface VenueRepository {
 
     saveVenueBlock(block: Block): Promise<Block>;
 
-    deleteVenueBlock(id: string): Promise<void>;
+    deleteVenueBlock(venueId: string, blockId: string): Promise<void>;
 
     findVenueBlockById(blockId: string): Promise<Block | null>
 }

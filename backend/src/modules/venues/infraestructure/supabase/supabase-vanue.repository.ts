@@ -129,11 +129,12 @@ export class SupabaseVenueRepository implements VenueRepository {
         return BlockMapper.toDomain(data);
     }
 
-    async deleteVenueBlock(blockId: string): Promise<void> {
+    async deleteVenueBlock(venueId: string, blockId: string): Promise<void> {
         const {error} = await supabaseClient
             .from("bloqueos_escenarios")
             .delete()
-            .eq("id", blockId);
+            .eq("id", blockId)
+            .eq("escenario_id", venueId);
 
         if (error) throw new DatabaseQueryError();
     }
