@@ -17,13 +17,16 @@ import {UpsertVenueScheduleUseCase} from "@venues-module/application/use-cases/u
 import {VenueIdParams} from "@venues-module/interfaces/http/validation/venue-id-params.schema";
 import {CreateVenueBlockBody} from "@venues-module/interfaces/http/validation/create-venue-block.schemas";
 import {CreateVenueBlockUseCase} from "@venues-module/application/use-cases/create-venue-block.usecase";
+import {BlockIdParams} from "@venues-module/interfaces/http/validation/block-id-params.schema";
+import {DeleteVenueBlockUseCase} from "@venues-module/application/use-cases/delete-venue-block.usecase";
 
 export class VenueController {
     constructor(
         private readonly getVenueAvailableTimeSlotsUseCase: GetVenueAvailableTimeSlotsUseCase,
         private readonly createVenueUseCase: CreateVenueUseCase,
         private readonly upsertVenueScheduleUseCase: UpsertVenueScheduleUseCase,
-        private readonly createVenueBlockUseCase: CreateVenueBlockUseCase
+        private readonly createVenueBlockUseCase: CreateVenueBlockUseCase,
+        private readonly deleteVenueBlockUseCase: DeleteVenueBlockUseCase
     ) {
     }
 
@@ -79,5 +82,14 @@ export class VenueController {
         });
 
         return res.status(201).send();
+    }
+
+    deleteVenueBlock = async (
+        req: Request<BlockIdParams, void, Record<string, never>>,
+        res: Response<void>,
+    ) => {
+        await this.deleteVenueBlockUseCase.execute(req.params.blockId);
+
+        return res.status(204).send();
     }
 }

@@ -16,11 +16,10 @@ export class CreateVenueBlockUseCase {
 
         const {venueId, date, startTime, endTime, reason} = input;
 
-        const existingBlocks = await this.venueRepository.findBlocksForDate(venueId, date);
-        const recurringBlocks = await this.venueRepository.findRecurringBlocksByDay(
-            venueId,
-            date.dayOfWeek
-        );
+        const [existingBlocks, recurringBlocks] = await Promise.all([
+            this.venueRepository.findBlocksForDate(venueId, date),
+            this.venueRepository.findRecurringBlocksByDay(venueId, date.dayOfWeek)
+        ]);
 
         const hasCollision = [...existingBlocks, ...recurringBlocks].some(
             (item) => startTime < item.endTime && item.startTime < endTime
@@ -41,6 +40,6 @@ export class CreateVenueBlockUseCase {
             reason: reason || null
         });
 
-        await this.venueRepository.saveBlock(newBlock);
+        await this.venueRepository.saveVenueBlock(newBlock);
     }
 }

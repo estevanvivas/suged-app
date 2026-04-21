@@ -29,7 +29,7 @@ export class GetVenueAvailableTimeSlotsUseCase {
         }
 
         const [blocks, recurringBlocks, bookings] = await Promise.all([
-            this.venueRepository.findBlocksForDate(venueId, date.toString()),
+            this.venueRepository.findBlocksForDate(venueId, date),
             this.venueRepository.findRecurringBlocksByDay(venueId, dayOfWeek),
             this.bookingRepository.findForVenueOnDate(venueId, date),
         ]);

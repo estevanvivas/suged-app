@@ -32,5 +32,9 @@ export interface VenueRepository {
 
     upsertSchedule(schedule: Schedule): Promise<Schedule>;
 
-    saveBlock(block: Block): Promise<Block>;
+    saveVenueBlock(block: Block): Promise<Block>;
+
+    deleteVenueBlock(id: string): Promise<void>;
+
+    findVenueBlockById(blockId: string): Promise<Block | null>
 }

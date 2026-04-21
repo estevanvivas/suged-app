@@ -111,7 +111,7 @@ export class SupabaseVenueRepository implements VenueRepository {
         return ScheduleMapper.toDomain(data);
     }
 
-    async saveBlock(block: Block): Promise<Block> {
+    async saveVenueBlock(block: Block): Promise<Block> {
         const {data, error} = await supabaseClient
             .from("bloqueos_escenarios")
             .insert({
@@ -127,5 +127,25 @@ export class SupabaseVenueRepository implements VenueRepository {
 
         if (error) throw new DatabaseQueryError();
         return BlockMapper.toDomain(data);
+    }
+
+    async deleteVenueBlock(blockId: string): Promise<void> {
+        const {error} = await supabaseClient
+            .from("bloqueos_escenarios")
+            .delete()
+            .eq("id", blockId);
+
+        if (error) throw new DatabaseQueryError();
+    }
+
+    async findVenueBlockById(blockId: string): Promise<Block | null> {
+        const {data, error} = await supabaseClient
+            .from("bloqueos_escenarios")
+            .select(BLOCK_COLS)
+            .eq("id", blockId)
+            .single();
+
+        if (error) throw new DatabaseQueryError();
+        return data ? BlockMapper.toDomain(data) : null;
     }
 }
