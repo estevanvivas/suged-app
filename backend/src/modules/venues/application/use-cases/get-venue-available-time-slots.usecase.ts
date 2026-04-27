@@ -18,12 +18,10 @@ export class GetVenueAvailableTimeSlotsUseCase {
     ) {
     }
 
-    async execute(input: GetVenueAvailableTimeSlotsInput): Promise<TimeSlotView[]> {
-        const {date, venueId} = input;
+    async execute({date, venueId}: GetVenueAvailableTimeSlotsInput): Promise<TimeSlotView[]> {
         const dayOfWeek = date.dayOfWeek;
 
         const schedule = await this.venueRepository.getScheduleByDay(venueId, dayOfWeek);
-
         if (!schedule) {
             return [];
         }

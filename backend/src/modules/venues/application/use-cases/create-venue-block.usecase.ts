@@ -8,13 +8,11 @@ export class CreateVenueBlockUseCase {
     constructor(private readonly venueRepository: VenueRepository) {
     }
 
-    async execute(input: CreateVenueBlockInput): Promise<void> {
-        const venue = await this.venueRepository.findById(input.venueId);
+    async execute({venueId, date, startTime, endTime, reason}: CreateVenueBlockInput): Promise<void> {
+        const venue = await this.venueRepository.findById(venueId);
         if (!venue) {
             throw new NotFoundError("No se encontró el escenario", "VENUE_NOT_FOUND");
         }
-
-        const {venueId, date, startTime, endTime, reason} = input;
 
         const [existingBlocks, recurringBlocks] = await Promise.all([
             this.venueRepository.findBlocksForDate(venueId, date),

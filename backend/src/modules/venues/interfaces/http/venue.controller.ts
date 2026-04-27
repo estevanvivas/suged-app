@@ -1,46 +1,40 @@
 import type {Request, Response} from "express";
 import {Temporal} from "@js-temporal/polyfill";
+
 import {TimeSlotView} from "@venues-module/application/contracts/time-slot.view";
+import {VenueView} from "@venues-module/application/contracts/venue.view";
+import {CreateVenueBlockUseCase} from "@venues-module/application/use-cases/create-venue-block.usecase";
+import {CreateVenueUseCase} from "@venues-module/application/use-cases/create-venue.usecase";
+import {DeleteVenueBlockUseCase} from "@venues-module/application/use-cases/delete-venue-block.usecase";
+import {DeleteVenueUseCase} from "@venues-module/application/use-cases/delete-venue.usecase";
 import {
     GetVenueAvailableTimeSlotsUseCase
 } from "@venues-module/application/use-cases/get-venue-available-time-slots.usecase";
+import {UpdateVenueUseCase} from "@venues-module/application/use-cases/update-venue.usecase";
+import {UpsertVenueScheduleUseCase} from "@venues-module/application/use-cases/upsert-recurring-schedule.usecase";
+import {CreateVenueBlockBody} from "@venues-module/interfaces/http/validation/create-venue-block.schema";
+import {CreateVenueBody} from "@venues-module/interfaces/http/validation/create-venue.schema";
+import {DeleteVenueBlockParams} from "@venues-module/interfaces/http/validation/delete-venue-block-params.schema";
 import {
     GetVenueAvailableTimeSlotsQuery
 } from "@venues-module/interfaces/http/validation/get-venue-available-time-slots.schema";
-import {VenueView} from "@venues-module/application/contracts/venue.view";
-import {CreateVenueBody} from "@venues-module/interfaces/http/validation/create-venue.schema";
-import {CreateVenueUseCase} from "@venues-module/application/use-cases/create-venue.usecase";
+import {UpdateVenueBody} from "@venues-module/interfaces/http/validation/update-venue.schema";
 import {
     UpsertVenueScheduleBody,
 } from "@venues-module/interfaces/http/validation/upsert-venue-schedule.schema";
-import {UpsertVenueScheduleUseCase} from "@venues-module/application/use-cases/upsert-recurring-schedule.usecase";
 import {VenueIdParams} from "@venues-module/interfaces/http/validation/venue-id-params.schema";
-import {CreateVenueBlockBody} from "@venues-module/interfaces/http/validation/create-venue-block.schema";
-import {CreateVenueBlockUseCase} from "@venues-module/application/use-cases/create-venue-block.usecase";
-import {DeleteVenueBlockUseCase} from "@venues-module/application/use-cases/delete-venue-block.usecase";
-import {DeleteVenueBlockParams} from "@venues-module/interfaces/http/validation/delete-venue-block-params.schema";
 
 export class VenueController {
     constructor(
-        private readonly getVenueAvailableTimeSlotsUseCase: GetVenueAvailableTimeSlotsUseCase,
         private readonly createVenueUseCase: CreateVenueUseCase,
+        private readonly updateVenueUseCase: UpdateVenueUseCase,
+        private readonly deleteVenueUseCase: DeleteVenueUseCase,
+        private readonly getVenueAvailableTimeSlotsUseCase: GetVenueAvailableTimeSlotsUseCase,
         private readonly upsertVenueScheduleUseCase: UpsertVenueScheduleUseCase,
         private readonly createVenueBlockUseCase: CreateVenueBlockUseCase,
-        private readonly deleteVenueBlockUseCase: DeleteVenueBlockUseCase
+        private readonly deleteVenueBlockUseCase: DeleteVenueBlockUseCase,
     ) {
     }
-
-    getAvailableTimeSlots = async (
-        req: Request<VenueIdParams, TimeSlotView[], unknown, GetVenueAvailableTimeSlotsQuery>,
-        res: Response<TimeSlotView[]>
-    ) => {
-        const slots = await this.getVenueAvailableTimeSlotsUseCase.execute({
-            venueId: req.params.venueId,
-            date: Temporal.PlainDate.from(req.query.date),
-        });
-
-        return res.json(slots);
-    };
 
     createVenue = async (
         req: Request<Record<string, never>, VenueView, CreateVenueBody>,
@@ -54,6 +48,40 @@ export class VenueController {
 
         return res.status(201).json(venue);
     }
+
+    upateVenue = async (
+        req: Request<VenueIdParams, VenueView, UpdateVenueBody>,
+        res: Response<VenueView>,
+    ) => {
+        const data = {
+            id: req.params.venueId,
+            ...req.body,
+        }
+
+        const updatedVenue = await this.updateVenueUseCase.execute(data);
+
+        return res.status(200).json(updatedVenue);
+    }
+
+    deleteVenue = async (
+        req: Request<VenueIdParams, void, Record<string, never>>,
+        res: Response<void>,
+    ) => {
+        await this.deleteVenueUseCase.execute(req.params.venueId)
+        return res.status(204).send();
+    }
+
+    getAvailableTimeSlots = async (
+        req: Request<VenueIdParams, TimeSlotView[], unknown, GetVenueAvailableTimeSlotsQuery>,
+        res: Response<TimeSlotView[]>
+    ) => {
+        const slots = await this.getVenueAvailableTimeSlotsUseCase.execute({
+            venueId: req.params.venueId,
+            date: Temporal.PlainDate.from(req.query.date),
+        });
+
+        return res.json(slots);
+    };
 
     upsertVenueSchedule = async (
         req: Request<VenueIdParams, void, UpsertVenueScheduleBody>,
