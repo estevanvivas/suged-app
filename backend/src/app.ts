@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import {errorHandler} from "@infra/http/middlewares/error-handler.middleware";
+import {venueRoutes} from "@venues-module/venues.module";
 
 const app = express();
 
@@ -13,6 +14,8 @@ app.get('/api/health', (req, res) => {
         mensaje: 'El servidor está funcionando correctamente.'
     });
 });
+
+app.use("/api/venues", venueRoutes);
 
 app.use(errorHandler);
 
