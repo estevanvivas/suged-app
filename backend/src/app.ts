@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import {bookingRoutes} from "@bookings-module/bookings.module";
 import {errorHandler} from "@infra/http/middlewares/error-handler.middleware";
 import {venueRoutes} from "@venues-module/venues.module";
 
@@ -16,6 +17,7 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use("/api/venues", venueRoutes);
+app.use("/api/bookings", bookingRoutes);
 
 app.use(errorHandler);
 

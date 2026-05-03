@@ -1,4 +1,5 @@
 import {Temporal} from "@js-temporal/polyfill";
+import {randomUUID} from "node:crypto";
 
 export class Booking {
 
@@ -14,9 +15,29 @@ export class Booking {
         public createdAt: Temporal.Instant
     ) {
     }
+
+    static create(data: {
+        userId: string;
+        venueId: string;
+        bookingDate: Temporal.PlainDate;
+        startTime: Temporal.PlainTime;
+        endTime: Temporal.PlainTime;
+    }): Booking {
+        return new Booking(
+            randomUUID(),
+            data.userId,
+            data.venueId,
+            data.bookingDate,
+            data.startTime,
+            data.endTime,
+            "PENDIENTE_APROBACION",
+            randomUUID(),
+            Temporal.Now.instant()
+        );
+    }
 }
 
 export type BookingStatus =
-    | 'PENDING_APPROVAL'
-    | 'APPROVED'
-    | 'REJECTED';
+    | "PENDIENTE_APROBACION"
+    | "APROBADA"
+    | "RECHAZADA";

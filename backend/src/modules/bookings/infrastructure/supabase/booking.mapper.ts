@@ -17,16 +17,16 @@ export class BookingMapper {
         );
     }
 
-    static toPersistence(block: Booking): Omit<BookingRow, "id"> {
+    static toPersistence(booking: Booking): Omit<BookingRow, "id"> {
         return {
-            usuario_id: block.userId,
-            escenario_id: block.venueId,
-            fecha_reserva: block.bookingDate.toString(),
-            hora_inicio: block.startTime.toString(),
-            hora_fin: block.endTime.toString(),
-            estado: block.status,
-            qr_token: block.qrToken,
-            creado_en: block.createdAt.toString(),
+            usuario_id: booking.userId,
+            escenario_id: booking.venueId,
+            fecha_reserva: booking.bookingDate.toString(),
+            hora_inicio: booking.startTime.toString(),
+            hora_fin: booking.endTime.toString(),
+            estado: booking.status,
+            qr_token: booking.qrToken,
+            creado_en: booking.createdAt.toString(),
         };
     }
 }

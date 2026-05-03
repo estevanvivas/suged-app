@@ -6,4 +6,6 @@ export interface BookingRepository {
         venueId: string,
         date: Temporal.PlainDate
     ): Promise<Booking[]>;
+
+    save(booking: Booking): Promise<Booking>;
 }
