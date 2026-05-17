@@ -1,6 +1,6 @@
 import {BookingRepository} from "@bookings-module/domain/repositories/booking.repository";
 import {Temporal} from "@js-temporal/polyfill";
-import {Booking} from "@bookings-module/domain/entities/booking.entity";
+import {Booking, BookingStatus} from "@bookings-module/domain/entities/booking.entity";
 import {supabaseClient} from "@infra/database/supabase/client";
 import {BookingMapper} from "@bookings-module/infrastructure/supabase/booking.mapper";
 import {DatabaseQueryError} from "@shared/errors/DatabaseError";
@@ -21,6 +21,17 @@ export class SupabaseBookingRepository implements BookingRepository {
         return data.map(BookingMapper.toDomain);
     }
 
+    async findById(id: string): Promise<Booking | null> {
+        const {data, error} = await supabaseClient
+            .from("reservas")
+            .select(BOOKING_COLS)
+            .eq("id", id)
+            .maybeSingle();
+
+        if (error) throw new DatabaseQueryError();
+        return data ? BookingMapper.toDomain(data) : null;
+    }
+
     async save(booking: Booking): Promise<Booking> {
         const {data, error} = await supabaseClient
             .from("reservas")
@@ -28,6 +39,18 @@ export class SupabaseBookingRepository implements BookingRepository {
                 id: booking.id,
                 ...BookingMapper.toPersistence(booking)
             })
+            .select(BOOKING_COLS)
+            .single();
+
+        if (error) throw new DatabaseQueryError();
+        return BookingMapper.toDomain(data);
+    }
+
+    async updateStatus(id: string, status: BookingStatus): Promise<Booking> {
+        const {data, error} = await supabaseClient
+            .from("reservas")
+            .update({estado: status})
+            .eq("id", id)
             .select(BOOKING_COLS)
             .single();
 

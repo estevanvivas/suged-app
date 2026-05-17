@@ -1,5 +1,5 @@
 import {Temporal} from "@js-temporal/polyfill";
-import {Booking} from "@bookings-module/domain/entities/booking.entity";
+import {Booking, BookingStatus} from "@bookings-module/domain/entities/booking.entity";
 
 export interface BookingRepository {
     findForVenueOnDate(
@@ -7,5 +7,9 @@ export interface BookingRepository {
         date: Temporal.PlainDate
     ): Promise<Booking[]>;
 
+    findById(id: string): Promise<Booking | null>;
+
     save(booking: Booking): Promise<Booking>;
+
+    updateStatus(id: string, status: BookingStatus): Promise<Booking>;
 }

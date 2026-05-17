@@ -7,10 +7,10 @@ import {RecurringBlock} from "@venues-module/domain/entities/recurring-block.ent
 import {Schedule} from "@venues-module/domain/entities/schedule.entity";
 import {Venue} from "@venues-module/domain/entities/venue.entity";
 import {VenueRepository} from "@venues-module/domain/repositories/venue.repository";
-import {BlockMapper} from "@venues-module/infraestructure/supabase/mappers/block.mapper";
-import {RecurringBlockMapper} from "@venues-module/infraestructure/supabase/mappers/recurring-block.mapper";
-import {ScheduleMapper} from "@venues-module/infraestructure/supabase/mappers/schedule.mapper";
-import {VenueMapper} from "@venues-module/infraestructure/supabase/mappers/venue.mapper";
+import {BlockMapper} from "../supabase/mappers/block.mapper";
+import {RecurringBlockMapper} from "../supabase/mappers/recurring-block.mapper";
+import {ScheduleMapper} from "../supabase/mappers/schedule.mapper";
+import {VenueMapper} from "../supabase/mappers/venue.mapper";
 
 const VENUE_COLS = "id, nombre, descripcion, aforo, imagen_url, estado, creado_en";
 const SCHEDULE_COLS = "id, escenario_id, dia_semana, hora_apertura, hora_cierre";

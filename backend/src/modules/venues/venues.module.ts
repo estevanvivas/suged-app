@@ -6,7 +6,7 @@ import {DeleteVenueUseCase} from "@venues-module/application/use-cases/delete-ve
 import {GetVenueAvailableTimeSlotsUseCase} from "@venues-module/application/use-cases/get-venue-available-time-slots.usecase";
 import {UpdateVenueUseCase} from "@venues-module/application/use-cases/update-venue.usecase";
 import {UpsertVenueScheduleUseCase} from "@venues-module/application/use-cases/upsert-recurring-schedule.usecase";
-import {SupabaseVenueRepository} from "@venues-module/infraestructure/supabase/supabase-vanue.repository";
+import {SupabaseVenueRepository} from "./infrastructure/supabase/supabase-vanue.repository";
 import {VenueController} from "@venues-module/interfaces/http/venue.controller";
 import {createVenueRoutes} from "@venues-module/interfaces/http/venue.routes";
 
