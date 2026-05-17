@@ -36,6 +36,16 @@ export interface VenueRepository {
         dayOfWeek: DayOfWeek
     ): Promise<RecurringBlock[]>;
 
+    findRecurringBlocksByVenue(venueId: string): Promise<RecurringBlock[]>;
+
+    findRecurringBlockById(blockId: string): Promise<RecurringBlock | null>;
+
+    saveRecurringBlock(block: RecurringBlock): Promise<RecurringBlock>;
+
+    updateRecurringBlock(block: RecurringBlock): Promise<RecurringBlock>;
+
+    deleteRecurringBlock(venueId: string, blockId: string): Promise<void>;
+
     findVenueBlockById(blockId: string): Promise<Block | null>;
 
     saveVenueBlock(block: Block): Promise<Block>;

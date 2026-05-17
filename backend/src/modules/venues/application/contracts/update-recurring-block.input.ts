@@ -1,0 +1,11 @@
+import {DayOfWeek} from "@/core/domain/enums/day-of-week";
+import {Temporal} from "@js-temporal/polyfill";
+
+export interface UpdateRecurringBlockInput {
+    venueId: string;
+    blockId: string;
+    dayOfWeek?: DayOfWeek;
+    startTime?: Temporal.PlainTime;
+    endTime?: Temporal.PlainTime;
+    reason?: string | null;
+}

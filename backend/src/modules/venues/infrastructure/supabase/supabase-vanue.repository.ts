@@ -115,6 +115,66 @@ export class SupabaseVenueRepository implements VenueRepository {
         return data.map(RecurringBlockMapper.toDomain);
     }
 
+    async findRecurringBlocksByVenue(venueId: string): Promise<RecurringBlock[]> {
+        const {data, error} = await supabaseClient
+            .from("bloqueos_recurrentes")
+            .select(RECURRING_BLOCK_COLS)
+            .eq("escenario_id", venueId)
+            .order("dia_semana", {ascending: true})
+            .order("hora_inicio", {ascending: true});
+
+        if (error) throw new DatabaseQueryError();
+        return data.map(RecurringBlockMapper.toDomain);
+    }
+
+    async findRecurringBlockById(blockId: string): Promise<RecurringBlock | null> {
+        const {data, error} = await supabaseClient
+            .from("bloqueos_recurrentes")
+            .select(RECURRING_BLOCK_COLS)
+            .eq("id", blockId)
+            .maybeSingle();
+
+        if (error) throw new DatabaseQueryError();
+        return data ? RecurringBlockMapper.toDomain(data) : null;
+    }
+
+    async saveRecurringBlock(block: RecurringBlock): Promise<RecurringBlock> {
+        const {data, error} = await supabaseClient
+            .from("bloqueos_recurrentes")
+            .insert({
+                id: block.id,
+                ...RecurringBlockMapper.toPersistence(block),
+            })
+            .select(RECURRING_BLOCK_COLS)
+            .single();
+
+        if (error) throw new DatabaseQueryError();
+        return RecurringBlockMapper.toDomain(data);
+    }
+
+    async updateRecurringBlock(block: RecurringBlock): Promise<RecurringBlock> {
+        const {data, error} = await supabaseClient
+            .from("bloqueos_recurrentes")
+            .update(RecurringBlockMapper.toPersistence(block))
+            .eq("id", block.id)
+            .eq("escenario_id", block.venueId)
+            .select(RECURRING_BLOCK_COLS)
+            .single();
+
+        if (error) throw new DatabaseQueryError();
+        return RecurringBlockMapper.toDomain(data);
+    }
+
+    async deleteRecurringBlock(venueId: string, blockId: string): Promise<void> {
+        const {error} = await supabaseClient
+            .from("bloqueos_recurrentes")
+            .delete()
+            .eq("id", blockId)
+            .eq("escenario_id", venueId);
+
+        if (error) throw new DatabaseQueryError();
+    }
+
     async upsertSchedule(schedule: Schedule): Promise<Schedule> {
         const existing = await this.getScheduleByDay(schedule.venueId, schedule.dayOfWeek);
 
