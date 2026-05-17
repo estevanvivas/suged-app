@@ -12,7 +12,8 @@
       "@bookings-module/*": ["modules/bookings/*"],
       "@shared/*": ["shared/*"],
       "@infra/*": ["infrastructure/*"],
-      "@config/*": ["config/*"]
+      "@config/*": ["config/*"],
+      "@swagger/*": ["swagger/*"]
     },
     "esModuleInterop": true,
     "strict": true,
