@@ -19,7 +19,7 @@ export const createBookingRoutes = (controller: BookingController) => {
     );
 
     router.patch(
-        "/:bookingId/estado",
+        "/:bookingId/status",
         requireAuthenticatedAdmin,
         validateParams(bookingIdParamsSchema),
         validateBody(updateBookingStatusBodySchema),

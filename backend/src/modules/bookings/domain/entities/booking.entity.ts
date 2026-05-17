@@ -30,7 +30,7 @@ export class Booking {
             data.bookingDate,
             data.startTime,
             data.endTime,
-            "PENDIENTE_APROBACION",
+            "APROBACION_PENDIENTE",
             randomUUID(),
             Temporal.Now.instant()
         );
@@ -38,6 +38,6 @@ export class Booking {
 }
 
 export type BookingStatus =
-    | "PENDIENTE_APROBACION"
+    | "APROBACION_PENDIENTE"
     | "APROBADA"
     | "RECHAZADA";

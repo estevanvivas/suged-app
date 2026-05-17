@@ -32,7 +32,7 @@ export class SupabaseVenueRepository implements VenueRepository {
         const {data, error} = await supabaseClient
             .from("escenarios")
             .select(VENUE_COLS)
-            .eq("estado", "ACTIVE");
+            .eq("estado", "ACTIVO");
 
         if (error) throw new DatabaseQueryError();
         return data.map(VenueMapper.toDomain);

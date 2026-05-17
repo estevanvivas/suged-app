@@ -25,12 +25,12 @@ export class Venue {
             venueData.description,
             venueData.capacity,
             venueData.imageUrl ?? null,
-            'ACTIVE',
+            'ACTIVO',
             Temporal.Now.instant()
         );
     }
 }
 
 export type VenueStatus =
-    | 'ACTIVE'
-    | 'INACTIVE';
+    | 'ACTIVO'
+    | 'INACTIVO';

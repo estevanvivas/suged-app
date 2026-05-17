@@ -28,7 +28,7 @@ export class CreateBookingUseCase {
             throw new NotFoundError("No se encontró el escenario", "VENUE_NOT_FOUND");
         }
 
-        if (venue.status !== "ACTIVE") {
+        if (venue.status !== "ACTIVO") {
             throw new InvalidOperationError(
                 "El escenario no está disponible para reservas.",
                 "VENUE_NOT_AVAILABLE"

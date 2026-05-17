@@ -6,7 +6,7 @@ import {BookingMapper} from "@bookings-module/infrastructure/supabase/booking.ma
 import {DatabaseQueryError} from "@shared/errors/DatabaseError";
 
 const BOOKING_COLS = "id, usuario_id, escenario_id, fecha_reserva, hora_inicio, hora_fin, estado, qr_token, creado_en";
-const ACTIVE_BOOKING_STATUSES = ["PENDIENTE_APROBACION", "APROBADA"];
+const ACTIVE_BOOKING_STATUSES = ["APROBACION_PENDIENTE", "APROBADA"];
 
 export class SupabaseBookingRepository implements BookingRepository {
     async findForVenueOnDate(venueId: string, date: Temporal.PlainDate): Promise<Booking[]> {
