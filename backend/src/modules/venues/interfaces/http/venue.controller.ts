@@ -85,7 +85,10 @@ export class VenueController {
         req: Request<VenueIdParams, void, Record<string, never>>,
         res: Response<void>,
     ) => {
-        await this.deleteVenueUseCase.execute(req.params.venueId)
+        await this.deleteVenueUseCase.execute({
+            venueId: req.params.venueId,
+        });
+
         return res.status(204).send();
     }
 

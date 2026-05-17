@@ -1,11 +1,12 @@
 import {VenueRepository} from "@venues-module/domain/repositories/venue.repository";
 import {NotFoundError} from "@shared/errors/NotFoundError";
+import {DeleteVenueInput} from "@venues-module/application/contracts/delete-venue.input";
 
 export class DeleteVenueUseCase {
     constructor(private readonly venueRepository: VenueRepository) {
     }
 
-    async execute(venueId: string): Promise<void> {
+    async execute({venueId}: DeleteVenueInput): Promise<void> {
         const existingVenue = await this.venueRepository.findById(venueId);
         if (!existingVenue) {
             throw new NotFoundError("No se encontró el escenario", "VENUE_NOT_FOUND");
