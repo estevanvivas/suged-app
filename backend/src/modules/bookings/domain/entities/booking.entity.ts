@@ -40,4 +40,5 @@ export class Booking {
 export type BookingStatus =
     | "APROBACION_PENDIENTE"
     | "APROBADA"
-    | "RECHAZADA";
+    | "RECHAZADA"
+    | "CANCELADA";

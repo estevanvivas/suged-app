@@ -9,7 +9,18 @@ export interface BookingRepository {
 
     findById(id: string): Promise<Booking | null>;
 
+    findByUserId(userId: string): Promise<Booking[]>;
+
     save(booking: Booking): Promise<Booking>;
 
     updateStatus(id: string, status: BookingStatus): Promise<Booking>;
+
+    updateSchedule(
+        id: string,
+        date: Temporal.PlainDate,
+        startTime: Temporal.PlainTime,
+        endTime: Temporal.PlainTime
+    ): Promise<Booking>;
+
+    delete(id: string): Promise<void>;
 }

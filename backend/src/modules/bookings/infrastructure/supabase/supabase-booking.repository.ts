@@ -32,6 +32,18 @@ export class SupabaseBookingRepository implements BookingRepository {
         return data ? BookingMapper.toDomain(data) : null;
     }
 
+    async findByUserId(userId: string): Promise<Booking[]> {
+        const {data, error} = await supabaseClient
+            .from("reservas")
+            .select(BOOKING_COLS)
+            .eq("usuario_id", userId)
+            .order("fecha_reserva", {ascending: false})
+            .order("hora_inicio", {ascending: false});
+
+        if (error) throw new DatabaseQueryError();
+        return data.map(BookingMapper.toDomain);
+    }
+
     async save(booking: Booking): Promise<Booking> {
         const {data, error} = await supabaseClient
             .from("reservas")
@@ -56,5 +68,35 @@ export class SupabaseBookingRepository implements BookingRepository {
 
         if (error) throw new DatabaseQueryError();
         return BookingMapper.toDomain(data);
+    }
+
+    async updateSchedule(
+        id: string,
+        date: Temporal.PlainDate,
+        startTime: Temporal.PlainTime,
+        endTime: Temporal.PlainTime
+    ): Promise<Booking> {
+        const {data, error} = await supabaseClient
+            .from("reservas")
+            .update({
+                fecha_reserva: date.toString(),
+                hora_inicio: startTime.toString(),
+                hora_fin: endTime.toString(),
+            })
+            .eq("id", id)
+            .select(BOOKING_COLS)
+            .single();
+
+        if (error) throw new DatabaseQueryError();
+        return BookingMapper.toDomain(data);
+    }
+
+    async delete(id: string): Promise<void> {
+        const {error} = await supabaseClient
+            .from("reservas")
+            .delete()
+            .eq("id", id);
+
+        if (error) throw new DatabaseQueryError();
     }
 }

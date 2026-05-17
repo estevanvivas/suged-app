@@ -5,6 +5,7 @@ export const updateBookingStatusBodySchema = z.object({
         "APROBACION_PENDIENTE",
         "APROBADA",
         "RECHAZADA",
+        "CANCELADA",
     ]),
 });
 
